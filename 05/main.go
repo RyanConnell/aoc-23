@@ -38,16 +38,12 @@ type ConversionRule struct {
 }
 
 type Converter struct {
-	source          string
-	destination     string
-	rules           []ConversionRule
-	conversionCache map[int]int
+	source      string
+	destination string
+	rules       []ConversionRule
 }
 
 func (c *Converter) convert(sourceID int) int {
-	if result, ok := c.conversionCache[sourceID]; ok {
-		return result
-	}
 	for _, rule := range c.rules {
 		if sourceID < rule.sourceIdxStart || sourceID > rule.sourceIdxEnd {
 			continue
