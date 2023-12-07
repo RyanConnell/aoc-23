@@ -49,12 +49,19 @@ func main() {
 		lines = append(lines, scanner.Text())
 	}
 
-	solutionPart1, err := solve(lines)
+	solutionPart1, err := solve(lines, false)
 	if err != nil {
 		fmt.Printf("Error: %v", err)
 		return
 	}
 	fmt.Printf("Part 1 Result: %d\n", solutionPart1)
+
+	solutionPart2, err := solve(lines, true)
+	if err != nil {
+		fmt.Printf("Error: %v", err)
+		return
+	}
+	fmt.Printf("Part 2 Result: %d\n", solutionPart2)
 }
 
 type Hand struct {
@@ -67,6 +74,58 @@ func (h *Hand) handType() int {
 	for _, card := range h.cards {
 		countPerCard[card]++
 	}
+	return checkRank(countPerCard)
+}
+
+func (h *Hand) handTypeWithWildcard() int {
+	countPerCard := make(map[rune]int)
+	for _, card := range h.cards {
+		countPerCard[card]++
+	}
+	jokerCount := countPerCard['J']
+	delete(countPerCard, 'J')
+
+	type CardInfo struct {
+		card  rune
+		count int
+	}
+	var cardInfos []CardInfo
+	for card, count := range countPerCard {
+		cardInfos = append(cardInfos, CardInfo{card, count})
+	}
+	sort.Slice(cardInfos, func(i, j int) bool {
+		return cardInfos[i].count > cardInfos[j].count
+	})
+
+	if jokerCount == 5 {
+		return FIVE_KIND
+	}
+	countPerCard[cardInfos[0].card] += jokerCount
+	return checkRank(countPerCard)
+}
+
+func (h Hand) beats(h2 Hand, useWildcards bool) bool {
+	var h1Type, h2Type int
+	if useWildcards {
+		cardValues['J'] = 0
+		h1Type, h2Type = h.handTypeWithWildcard(), h2.handTypeWithWildcard()
+	} else {
+		cardValues['J'] = 11
+		h1Type, h2Type = h.handType(), h2.handType()
+	}
+
+	if h1Type == h2Type {
+		for i := 0; i < len(h.cards); i++ {
+			if h.cards[i] == h2.cards[i] {
+				continue
+			}
+			return cardValues[rune(h.cards[i])] > cardValues[rune(h2.cards[i])]
+		}
+	}
+	return h1Type < h2Type
+}
+
+func checkRank(countPerCard map[rune]int) int {
 	countPerSize := make(map[int]int)
 	for _, count := range countPerCard {
 		countPerSize[count]++
@@ -93,20 +152,7 @@ func (h *Hand) handType() int {
 	return HIGH_CARD
 }
 
-func (h Hand) beats(h2 Hand) bool {
-	h1Type, h2Type := h.handType(), h2.handType()
-	if h1Type == h2Type {
-		for i := 0; i < len(h.cards); i++ {
-			if h.cards[i] == h2.cards[i] {
-				continue
-			}
-			return cardValues[rune(h.cards[i])] > cardValues[rune(h2.cards[i])]
-		}
-	}
-	return h1Type < h2Type
-}
-
-func solve(lines []string) (int, error) {
+func solve(lines []string, useWildcards bool) (int, error) {
 	var hands []Hand
 	for _, line := range lines {
 		data := strings.Split(line, " ")
@@ -117,19 +163,12 @@ func solve(lines []string) (int, error) {
 		hands = append(hands, Hand{cards: data[0], bid: bid})
 	}
 
-	fmt.Printf("Unsorted:\n")
-	for _, hand := range hands {
-		fmt.Printf("\tHand: %+v is of type %d\n", hand, hand.handType())
-	}
-
 	sort.Slice(hands, func(i, j int) bool {
-		return !hands[i].beats(hands[j])
+		return !hands[i].beats(hands[j], useWildcards)
 	})
 
-	fmt.Printf("Sorted:\n")
 	var result int
 	for i, hand := range hands {
-		fmt.Printf("\tHand: %+v is of type %d\n", hand, hand.handType())
 		result += hand.bid * (i + 1)
 	}
 
