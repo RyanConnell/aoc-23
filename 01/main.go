@@ -1,11 +1,11 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
+
+	"github.com/RyanConnell/aoc-23/pkg/parser"
 )
 
 var validNumbers = map[string]int{
@@ -21,17 +21,9 @@ var validNumbers = map[string]int{
 }
 
 func main() {
-	file, err := os.Open("input.txt")
-	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return
-	}
-	defer file.Close()
-
 	var sum int
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
+	lines := parser.MustReadFile("input.txt")
+	for _, line := range lines {
 		if line == "" {
 			continue
 		}

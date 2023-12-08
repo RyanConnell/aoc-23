@@ -1,25 +1,14 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strconv"
+
+	"github.com/RyanConnell/aoc-23/pkg/parser"
 )
 
 func main() {
-	file, err := os.Open("sample.txt")
-	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-	var lines [][]rune
-	for scanner.Scan() {
-		lines = append(lines, []rune(scanner.Text()))
-	}
+	lines := parser.MustReadFile("input.txt")
 
 	sum, gearSum, err := solve(lines)
 	if err != nil {
@@ -31,7 +20,7 @@ func main() {
 
 }
 
-func solve(lines [][]rune) (int, int, error) {
+func solve(lines []string) (int, int, error) {
 	var sum int
 	adjacencies := make(map[string][]int)
 

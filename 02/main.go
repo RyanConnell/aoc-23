@@ -1,26 +1,18 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
+
+	"github.com/RyanConnell/aoc-23/pkg/parser"
 )
 
 func main() {
-	file, err := os.Open("input.txt")
-	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return
-	}
-	defer file.Close()
-
 	validCubes := map[string]int{"red": 12, "green": 13, "blue": 14}
-	scanner := bufio.NewScanner(file)
 	var sum, powerSum int
-	for scanner.Scan() {
-		line := scanner.Text()
+	lines := parser.MustReadFile("input.txt")
+	for _, line := range lines {
 		if line == "" {
 			continue
 		}

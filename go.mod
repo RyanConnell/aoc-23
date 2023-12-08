@@ -1,3 +1,3 @@
-module github.com/RyanConnell/advent-of-code
+module github.com/RyanConnell/aoc-23
 
 go 1.19

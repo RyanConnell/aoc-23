@@ -1,25 +1,14 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strings"
+
+	"github.com/RyanConnell/aoc-23/pkg/parser"
 )
 
 func main() {
-	file, err := os.Open("input.txt")
-	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-	var lines []string
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
+	lines := parser.MustReadFile("input.txt")
 
 	solutionPart1, err := solve(lines)
 	if err != nil {
