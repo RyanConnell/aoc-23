@@ -15,6 +15,7 @@ type TestCase[V comparable] struct {
 }
 
 func TimeAndCheck[V comparable](day int, cases []TestCase[V]) {
+	fmt.Println("|=====================================================|")
 	for _, tc := range cases {
 		lines := parser.MustReadFile(fmt.Sprintf("input/%s", tc.File))
 
@@ -33,4 +34,5 @@ func TimeAndCheck[V comparable](day int, cases []TestCase[V]) {
 
 		fmt.Printf("| Day %02d | %-20s| %-20s |\n", day, tc.Description, message)
 	}
+	fmt.Println("|=====================================================|")
 }
