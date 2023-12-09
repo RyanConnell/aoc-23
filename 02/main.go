@@ -9,31 +9,34 @@ import (
 )
 
 func main() {
+	lines := parser.MustReadFile("input/input.txt")
+	sum, powerSum := solve(lines)
+	fmt.Printf("Sum: %d\n", sum)
+	fmt.Printf("PowerSum: %d\n", powerSum)
+}
+
+func solve(lines []string) (int, int) {
 	validCubes := map[string]int{"red": 12, "green": 13, "blue": 14}
 	var sum, powerSum int
-	lines := parser.MustReadFile("input.txt")
 	for _, line := range lines {
 		if line == "" {
 			continue
 		}
 		game, err := parseLine(line)
 		if err != nil {
-			fmt.Printf("Error: %v", err)
 			continue
 		}
 
 		valid := game.valid(validCubes)
-		fmt.Printf("Valid: %v, Game: %+v\n", valid, game)
 		if valid {
 			sum += game.id
 		}
 
 		power := game.power()
-		fmt.Printf("\tPower: %d", power)
 		powerSum += power
 	}
-	fmt.Printf("Sum: %d\n", sum)
-	fmt.Printf("PowerSum: %d\n", powerSum)
+
+	return sum, powerSum
 }
 
 type Game struct {
@@ -64,7 +67,6 @@ func (g *Game) power() int {
 		}
 	}
 
-	fmt.Printf("\tMax: %v\n", maxCubes)
 	power := 1
 	for _, count := range maxCubes {
 		power *= count
