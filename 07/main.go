@@ -36,7 +36,7 @@ var cardValues = map[rune]int{
 }
 
 func main() {
-	lines := parser.MustReadFile("input.txt")
+	lines := parser.MustReadFile("input/input.txt")
 
 	solutionPart1, err := solve(lines, false)
 	if err != nil {
