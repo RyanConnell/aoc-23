@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	lines := parser.MustReadFile("input.txt")
+	lines := parser.MustReadFile("input/input.txt")
 
 	sum, totalCards, err := solve(lines)
 	if err != nil {
