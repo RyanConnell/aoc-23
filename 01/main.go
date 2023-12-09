@@ -21,21 +21,24 @@ var validNumbers = map[string]int{
 }
 
 func main() {
+	lines := parser.MustReadFile("input/input.txt")
+	result, _ := solve(lines)
+	fmt.Printf("Sum: %d\n", result)
+}
+
+func solve(lines []string) (int, error) {
 	var sum int
-	lines := parser.MustReadFile("input.txt")
 	for _, line := range lines {
 		if line == "" {
 			continue
 		}
 		val, err := asCalibrationValue(line)
 		if err != nil {
-			fmt.Printf("Error: %v", err)
 			continue
 		}
 		sum += val
-		fmt.Printf("- %2d <= %q\n", val, line)
 	}
-	fmt.Printf("Sum: %d\n", sum)
+	return sum, nil
 }
 
 func hasNumStrPrefix(str string) (int, bool) {
