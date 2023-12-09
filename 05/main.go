@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	file, err := os.Open("input.txt")
+	file, err := os.Open("input/input.txt")
 	if err != nil {
 		fmt.Printf("Error: %v", err)
 		return
@@ -104,8 +104,10 @@ func solve(lines []string, useSeedRanges bool) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	for i := 0; i < len(seeds); i += 2 {
-		seeds[i+1] = seeds[i] + seeds[i+1] - 1
+	if useSeedRanges {
+		for i := 0; i < len(seeds); i += 2 {
+			seeds[i+1] = seeds[i] + seeds[i+1] - 1
+		}
 	}
 
 	source := "seed"
@@ -119,7 +121,9 @@ func solve(lines []string, useSeedRanges bool) (int, error) {
 			return 0, fmt.Errorf("unknown source %s", source)
 		}
 
-		seeds = expandRanges(seeds, converter)
+		if useSeedRanges {
+			seeds = expandRanges(seeds, converter)
+		}
 		for i, seed := range seeds {
 			seeds[i] = converter.convert(seed)
 		}
