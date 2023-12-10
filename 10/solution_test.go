@@ -32,5 +32,35 @@ func TestDay10(t *testing.T) {
 			Solution:    solve,
 			Expected:    6778,
 		},
+		{
+			Description: "Part 2 (sample-1)",
+			File:        "p2-sample1.txt",
+			Solution:    solvePart2,
+			Expected:    4,
+		},
+		{
+			Description: "Part 2 (sample-2)",
+			File:        "p2-sample2.txt",
+			Solution:    solvePart2,
+			Expected:    4,
+		},
+		{
+			Description: "Part 2 (sample-3)",
+			File:        "p2-sample3.txt",
+			Solution:    solvePart2,
+			Expected:    8,
+		},
+		{
+			Description: "Part 2 (sample-4)",
+			File:        "p2-sample4.txt",
+			Solution:    solvePart2,
+			Expected:    10,
+		},
+		{
+			Description: "Part 2 (final)",
+			File:        "input.txt",
+			Solution:    solvePart2,
+			Expected:    433,
+		},
 	})
 }
