@@ -11,8 +11,26 @@ func TestDay16(t *testing.T) {
 		{
 			Description: "Part 1 (sample)",
 			File:        "sample.txt",
-			Solution:    solve,
+			Solution:    func(lines []string) (int, error) { return solve(lines, false) },
 			Expected:    46,
+		},
+		{
+			Description: "Part 1 (final)",
+			File:        "input.txt",
+			Solution:    func(lines []string) (int, error) { return solve(lines, false) },
+			Expected:    7798,
+		},
+		{
+			Description: "Part 2 (sample)",
+			File:        "sample.txt",
+			Solution:    func(lines []string) (int, error) { return solve(lines, true) },
+			Expected:    51,
+		},
+		{
+			Description: "Part 2 (final)",
+			File:        "input.txt",
+			Solution:    func(lines []string) (int, error) { return solve(lines, true) },
+			Expected:    8026,
 		},
 	})
 }

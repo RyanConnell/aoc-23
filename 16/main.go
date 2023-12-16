@@ -13,6 +13,24 @@ const (
 	WEST
 )
 
+func main() {
+	lines := parser.MustReadFile("input/input.txt")
+
+	solutionPart1, err := solve(lines, false)
+	if err != nil {
+		fmt.Printf("Error: %v", err)
+		return
+	}
+	fmt.Printf("Part 1 Result: %d\n", solutionPart1)
+
+	solutionPart2, err := solve(lines, true)
+	if err != nil {
+		fmt.Printf("Error: %v", err)
+		return
+	}
+	fmt.Printf("Part 2 Result: %d\n", solutionPart2)
+}
+
 type Mirror struct {
 	char               rune
 	directionsForInput map[int][]int
@@ -68,28 +86,7 @@ type Node struct {
 func NewNode(x, y int, mirror Mirror) *Node {
 	return &Node{x: x, y: y, mirror: mirror, visitedFrom: make(map[int]struct{})}
 }
-
-func main() {
-	lines := parser.MustReadFile("input/input.txt")
-
-	solutionPart1, err := solve(lines)
-	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return
-	}
-	fmt.Printf("Part 1 Result: %d\n", solutionPart1)
-
-	solutionPart2, err := solvePart2(lines)
-	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return
-	}
-	fmt.Printf("Part 2 Result: %d\n", solutionPart2)
-}
-
-/// Part 1 \\\
-
-func solve(lines []string) (int, error) {
+func solve(lines []string, exploreBoundaries bool) (int, error) {
 	nodeMap := make([][]*Node, len(lines))
 	energised := make([][]bool, len(lines))
 	for y, line := range lines {
@@ -143,25 +140,38 @@ func solve(lines []string) (int, error) {
 		}
 	}
 
-	explore(0, 0, EAST)
+	var maxEnergised int
+	check := func(x, y, dir int) {
+		explore(x, y, dir)
 
-	var count int
-	for _, row := range energised {
-		for _, ok := range row {
-			if ok {
-				count++
-				fmt.Printf("#")
-			} else {
-				fmt.Printf(".")
+		var count int
+		for y, row := range energised {
+			for x := range row {
+				if energised[y][x] {
+					count++
+					energised[y][x] = false
+				}
+				nodeMap[y][x].visitedFrom = make(map[int]struct{})
 			}
 		}
-		fmt.Println()
+		if count > maxEnergised {
+			maxEnergised = count
+		}
+
 	}
-	return count, nil
-}
 
-/// Part 2 \\\
+	if exploreBoundaries {
+		for y := 0; y < len(lines); y++ {
+			check(0, y, EAST)
+			check(len(lines[y])-1, y, WEST)
+		}
 
-func solvePart2(lines []string) (int, error) {
-	return 0, nil
+		for x := 0; x < len(lines[0]); x++ {
+			check(x, 0, SOUTH)
+			check(x, len(lines), NORTH)
+		}
+	} else {
+		check(0, 0, EAST)
+	}
+	return maxEnergised, nil
 }
